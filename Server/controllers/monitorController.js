@@ -71,7 +71,8 @@ const getMonitorStatsById = async (req, res, next) => {
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "getMonitorStatsById"));
   }
-};
+}; 
+
 
 const getMonitorCertificate = async (req, res, next) => {
   try {
@@ -105,17 +106,7 @@ const getMonitorCertificate = async (req, res, next) => {
   }
 };
 
-/**
- * Retrieves a monitor by its ID.
- * @async
- * @param {Object} req - The Express request object.
- * @property {Object} req.params - The parameters of the request.
- * @property {string} req.params.monitorId - The ID of the monitor to be retrieved.
- * @param {Object} res - The Express response object.
- * @param {function} next - The next middleware function.
- * @returns {Object} The response object with a success status, a message, and the retrieved monitor data.
- * @throws {Error} If there is an error during the process, especially if the monitor is not found (404) or if there is a validation error (422).
- */
+/*
 const getMonitorById = async (req, res, next) => {
   try {
     await getMonitorByIdParamValidation.validateAsync(req.params);
@@ -140,7 +131,50 @@ const getMonitorById = async (req, res, next) => {
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "getMonitorById"));
   }
-};
+}*/ 
+
+
+/**
+ * Retrieves a monitor by its ID.
+ * @async
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.monitorId - The ID of the monitor to be retrieved.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message, and the retrieved monitor data.
+ * @throws {Error} If there is an error during the process, especially if the monitor is not found (404) or if there is a validation error (422).
+ */
+
+const getMonitorById = async (req, res, next) => {
+  try {
+    await getMonitorByIdParamValidation.validateAsync(req.params);
+    await getMonitorByIdQueryValidation.validateAsync(req.query);
+  } catch (error) {
+    next(handleValidationError(error, SERVICE_NAME));
+    return;
+  }
+
+  try {
+    const monitor = await req.db.getMonitorById(req.params.monitorId);
+    if (!monitor) {
+      const error = new Error(errorMessages.MONITOR_GET_BY_ID);
+      error.status = 404;
+      return next(error); 
+    }
+
+    return res.json({
+      success: true,
+      msg: successMessages.MONITOR_GET_BY_ID,
+      data: monitor,
+    });
+  } catch (error) {
+    next(handleError(error, SERVICE_NAME, "getMonitorById"));
+  }
+}; 
+
+
+
 
 /**
  * Retrieves all monitors and a summary for a team based on the team ID.

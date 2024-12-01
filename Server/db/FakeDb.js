@@ -125,6 +125,19 @@ const editMonitor = async (req, res) => {
   return FAKE_MONITOR_DATA[idx];
 };
 
+const getMonitorStatsById = async (monitorId) => {
+  const monitor = FAKE_MONITOR_DATA.find((monitor) => monitor.id === monitorId);
+  if (!monitor) {
+    throw new Error(`Monitor with id ${monitorId} not found`);
+  }
+  return {
+    id: monitor.id,
+    name: monitor.name,
+    status: monitor.status || 'active',
+    usage: monitor.usage || 0,
+  };
+};
+
 module.exports = {
   connect,
   insertUser,
@@ -135,4 +148,6 @@ module.exports = {
   createMonitor,
   deleteMonitor,
   editMonitor,
+  getMonitorStatsById, // Export the new method
 };
+
