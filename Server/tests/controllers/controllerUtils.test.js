@@ -17,7 +17,7 @@ describe("controllerUtils - handleValidationError", () => {
     const result = handleValidationError(error, serviceName);
     expect(result.service).to.equal(serviceName);
   });
-
+  
   it("should set message to error.details[0].message if present", () => {
     const error = {
       details: [{ message: "Detail message" }],
