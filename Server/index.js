@@ -1,3 +1,5 @@
+require('newrelic');
+
 const path = require("path");
 const fs = require("fs");
 const swaggerUi = require("swagger-ui-express");
